@@ -27,6 +27,7 @@ pub struct Build {
     pub crate_data: manifest::CrateData,
     pub scope: Option<String>,
     pub disable_dts: bool,
+    pub weak_refs: bool,
     pub reference_types: bool,
     pub target: Target,
     pub profile: BuildProfile,
@@ -120,6 +121,10 @@ pub struct BuildOptions {
     /// this flag will disable generating this TypeScript file.
     pub disable_dts: bool,
 
+    #[structopt(long = "weak-refs")]
+    /// Enable usage of the JS weak references proposal.
+    pub weak_refs: bool,
+
     #[structopt(long = "reference-types")]
     /// Enable support for reference types. This feature is hoped to enable more efficient
     /// communication between the host (JS) and the wasm module, but not yet all browsers support it.
@@ -166,6 +171,7 @@ impl Default for BuildOptions {
             scope: None,
             mode: InstallMode::default(),
             disable_dts: false,
+            weak_refs: false,
             reference_types: false,
             target: Target::default(),
             debug: false,
@@ -203,6 +209,7 @@ impl Build {
             crate_data,
             scope: build_opts.scope,
             disable_dts: build_opts.disable_dts,
+            weak_refs: build_opts.weak_refs,
             reference_types: build_opts.reference_types,
             target: build_opts.target,
             profile,
@@ -378,6 +385,7 @@ impl Build {
             &self.out_dir,
             &self.out_name,
             self.disable_dts,
+            self.weak_refs,
             self.reference_types,
             self.target,
             self.profile,
